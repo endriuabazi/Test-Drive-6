@@ -1,0 +1,88 @@
+Test Drive 6
+
+DirectX APIs     7
+Build            28
+Operating System Windows NT Version 6.2, Build 9200 
+Processor        12 x GenuineIntel KNI @ 2690 MHz
+Physical Memory  2047MB
+Page File        4095MB
+System Name      DESKTOP-9INBNIH
+
+Sound Device	Headphones (Endriu's Buds2 Pro) ({0.0.0.00000000}.{7eab14d1-c2b9-4ac3-abcc-eb5cb7f7ad38}) 
+Sound Device	Speakers (Realtek(R) Audio) ({0.0.0.00000000}.{03408183-38ed-4a0e-aa61-49f115fa4c90}) 
+Sound Device	Speakers (EShare Audio) ({0.0.0.00000000}.{f7ac655b-2993-4d42-8263-244a105a14f6}) 
+EAX Support		Not Available
+
+dgVoodoo DirectX Wrapper	Driver Version 17479.02.07.0008
+Device Identifiers	00000000.00000000.00000000.00000000
+Skip VSync		Disabled
+
+Driver			dgVoodoo TnL HAL
+Gamma Control		Not Available
+Textures		On
+Dithering		On
+Subpixel Accuracy	On
+ZBias			On
+Filters			Mag Anisotropic	Min Anisotropic	Mip Trilinear
+LODBias			On
+GDI Access		Yes
+EAX Support		Not Available
+Released 0 Vertex Buffers in 0 msecs
+
+Static Textures		34	using 1789952 Pixels @ 16bits & 81920 Pixels @ 32bits
+Maximum Texture Dimension	 2048
+prepared 139 level textures in 177 msecs
+Managed Textures: Capacity 600 In Level 139
+environment script being used: 'objects\level3\CM5.env'
+
+Static Textures		32	using 634880 Pixels @ 16bits & 933888 Pixels @ 32bits
+Maximum Texture Dimension	 2048
+prepared 254 level textures in 307 msecs
+Released 0 Vertex Buffers in 0 msecs
+Released 0 Vertex Buffers in 0 msecs
+
+---------------------------------
+num models = 2726
+num sub objects = 9161
+num verts = 191343
+num tris = 122316
+---------------------------------
+
+2726 level vertex buffers uploaded in 4 msecs
+Managed Textures: Capacity 600 In Level 254
+num triangles: (min,avg,max) = (0,0,0)
+num texture swaps: (min,avg,max) = (20,79,139)
+Released 2767 Vertex Buffers in 3 msecs
+Released 0 Vertex Buffers in 0 msecs
+
+Static Textures		34	using 1789952 Pixels @ 16bits & 81920 Pixels @ 32bits
+Maximum Texture Dimension	 2048
+prepared 139 level textures in 140 msecs
+Managed Textures: Capacity 600 In Level 139
+environment script being used: 'objects\level6\CM3.env'
+
+Static Textures		31	using 569344 Pixels @ 16bits & 933888 Pixels @ 32bits
+Maximum Texture Dimension	 2048
+prepared 333 level textures in 426 msecs
+Released 0 Vertex Buffers in 0 msecs
+Released 0 Vertex Buffers in 0 msecs
+
+---------------------------------
+num models = 910
+num sub objects = 7418
+num verts = 217485
+num tris = 133882
+---------------------------------
+
+910 level vertex buffers uploaded in 4 msecs
+Managed Textures: Capacity 600 In Level 333
+num triangles: (min,avg,max) = (0,0,0)
+num texture swaps: (min,avg,max) = (28,77,147)
+Released 951 Vertex Buffers in 1 msecs
+Released 0 Vertex Buffers in 0 msecs
+
+Static Textures		34	using 1789952 Pixels @ 16bits & 81920 Pixels @ 32bits
+Maximum Texture Dimension	 2048
+prepared 139 level textures in 142 msecs
+Managed Textures: Capacity 600 In Level 139
+Released 0 Vertex Buffers in 0 msecs
