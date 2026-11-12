@@ -325,3 +325,39 @@ Found while doing it:
 - Section `.td6mod` is now 0x10000: cars +0, paint +0x1800, group 1 +0x2400, order +0x2480,
   race buffer +0x2500, logo names +0x2600, logo handles +0x2700, text +0x3000, strings +0x6000.
 - Capstone sweep of .text: no operand left on any moved table.
+
+## ChatGPT-built C230 (handoff 0005, 2026-11-12): rejected
+A procedural 3,556-triangle model from ChatGPT (flat front/back, painted details, yellow mask)
+imported fine (winding, scale 320 units/m, wheels) but looked terrible in game; reverted to the
+Sketchfab-based model. Use ChatGPT for 2D art only; take car meshes from real 3D models.
+Scale reference from remaster cars: about 320 game units per metre (Impreza, DB7).
+
+## Mercedes 190E (car 59) + Mercedes logo (built 2026-11-12; works in game after the TGA fix)
+- Model: "1984 Mercedes 190E" by Dave Love (Sketchfab, CC-BY-4.0, credit required), from
+  handoff/inbox/0003. Converted with the extended `tools/blender_car.py` (scale 320/m,
+  wheels from EXT_Tyre, interior/engine/wheels dropped, 14,000 / 7,638 triangles, flat
+  colour atlas with the paint mask; only the plates keep texture detail):
+  `--wheel-material EXT_Tyre --drop "INT_,ENG_,Material_109,EXT_Rim,EXT_Calipers,EXT_Brake,EXT_Badges"
+   --keep INT_Glass_Refl --hi 14000 --env 5000 --bake 256 --detail Plate_D --paint EXT_Car_Paint
+   --colour "EXT_Glass=30,38,48;INT_Glass_Refl=30,38,48;HL_Glass=200,205,210;EXT_Chrome=205,208,212"`
+- Slot 19e: record from eli (I4 engine sound), handling/hub from xkr, class 1, 30,000.
+- Logo 21 MERCEDES: `mercedes.tga` (60x40, 32-bit, alpha, bottom-up like the others) drawn
+  by a script and added to frontend.zip; used by mcc and 19e.
+- Logo TGAs: 60x40, descriptor 8, background alpha 0.
+- C230 model credit: Efe Metin (Sketchfab, CC-BY-4.0).
+- First 190E test (2026-11-12): whole car black, paint had no effect. Cause: carbody.tga row
+  order. Retail textures are top-down (TGA descriptor 0x20), the remaster's bottom-up (0x08),
+  and the game honours the flag (checked: remaster sky/cp2 rear faces sample their red tail
+  light patch only with the flag honoured). td6car.py ignored it, so importing into a slot
+  copied from a remaster car (19e <- xkr) stored the image upside down. Fixed: read_tga
+  returns top-first rows, import writes in the car's own order. 190E texture re-imported.
+
+## Paint tint rule (tint routine 0x431200, read 2026-11-12)
+Called from the front end (0x4169ce) and the race loader (0x45a210) with two colours (body,
+stripe) from the paint table. Per pixel (R, G, B):
+- B == 0 and (R or G) > 0  -> body colour * (R + G) / 2 / 255   (the yellow mask; red with B 0 too!)
+- R == 0 and (G or B) > 0  -> stripe colour * (G + B) / 2 / 255 (cyan mask, e.g. Viper stripes)
+- anything else, and pure black, keeps its colour.
+So unpainted parts need B >= 1 and R >= 1: the remaster keeps a little blue in its tail lights
+(Impreza 160,0,16). The 190E's pure red/orange lights (B = 0) were painted; blender_car.py now
+clamps R and B to >= 1 outside the paint squares (`protect_colours`). 190E texture rebuilt; user confirms the lights keep their colours.
