@@ -17,8 +17,11 @@
   ],
   "logo_fixes": {"mam": "BMW", "mgt": "FORD", "atl": "FERRARI", "400": "FERRARI"},
   "cars": [
-    {"code": "mcc", "from": "base:eli", "files": "game:eli", "after": "att", "logo": "MERCEDES",
-     "name": "MERCEDES C230", "full": "2001 MERCEDES-BENZ C230", "class": 1, "price": 31000},
+    {"code": "mcc", "from": "base:xkr", "files": "game:eli", "after": "att", "logo": "MERCEDES",
+     "_doc": "was the C230 (Sketchfab); now the NFS Most Wanted CLK 500 via tools/nfsmw_car.py (handoff/inbox/0006); record from xkr (V8 sound)",
+     "name": "MERCEDES CLK500", "full": "2005 MERCEDES-BENZ CLK 500", "class": 2, "price": 58000,
+     "text": ["y2005 MERCEDES-BENZ CLK 500", " ", "yENGINE:", "wV8", "yBHP:", "w302",
+              "y0-60 MPH:", "w5.7 SECONDS", "yTOP SPEED:", "w155 MPH", "yLATERAL ACCELERATION:", "w0.88 G"]},
     {"code": "mar", "from": "retail:mam", "files": "retail:mam", "after": "mam"},
     {"code": "c72", "from": "retail:cud", "files": "retail:cud", "after": "cud"},
     {"code": "vat", "from": "retail:atl", "files": "retail:atl", "after": "atl"},

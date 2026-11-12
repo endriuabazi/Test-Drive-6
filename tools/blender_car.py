@@ -12,6 +12,7 @@ Usage (Blender 4.1+, from the game folder):
 Detailed models with many materials (interior, engine, separate wheels):
   --drop "INT_,ENG_,EXT_Rim"     delete faces whose material name starts with one of these
   --keep INT_Glass_Refl          never delete these (exceptions to --drop)
+  --protect Plate_D,TL_,HL_      never simplify these small parts (plates, light lenses)
   --wheel-material EXT_Tyre      take wheel centres from these faces (one wheel per x/y
                                  quadrant) instead of --wheels, then delete them
   --bake 256                     build one new atlas texture: every material becomes a flat
@@ -40,7 +41,7 @@ def args():
     a = sys.argv[sys.argv.index("--") + 1:]
     opt = {"--scale": "315", "--radius": "0.37", "--wheel-width": "0.14", "--hi": "560",
            "--env": "300", "--front": "-y", "--wheels": "", "--drop": "", "--wheel-material": "",
-           "--bake": "0", "--paint": "", "--colour": "", "--keep": "", "--detail": ""}
+           "--bake": "0", "--paint": "", "--colour": "", "--keep": "", "--detail": "", "--protect": ""}
     pos = []
     i = 0
     while i < len(a):
@@ -69,6 +70,7 @@ def args():
                 drop=[p for p in opt["--drop"].split(",") if p], wheel_mat=opt["--wheel-material"],
                 keep=[p for p in opt["--keep"].split(",") if p],
                 detail=[p for p in opt["--detail"].split(",") if p],
+                protect=[p for p in opt["--protect"].split(",") if p],
                 bake=int(opt["--bake"]), colours=colours)
 
 
@@ -159,7 +161,7 @@ def delete_materials(ob, prefixes, keep):
     return len(doomed)
 
 
-def lod(ob, tris, name):
+def lod(ob, tris, name, protect=()):
     cur = sum(len(p.vertices) - 2 for p in ob.data.polygons)
     copy = ob.copy()
     copy.data = ob.data.copy()
@@ -170,6 +172,14 @@ def lod(ob, tris, name):
     m.use_symmetry = True
     m.symmetry_axis = "X"
     m.use_collapse_triangulate = True
+    if protect:
+        # only vertices in the group are decimated: leave out small parts that would otherwise
+        # merge into what is behind them (number plates, light lenses)
+        keep = material_ids(copy, protect)
+        held = {v for p in copy.data.polygons if p.material_index in keep for v in p.vertices}
+        vg = copy.vertex_groups.new(name="decimate")
+        vg.add([v.index for v in copy.data.vertices if v.index not in held], 1.0, "REPLACE")
+        m.vertex_group = vg.name
     copy.modifiers.new("tri", "TRIANGULATE")
     return copy
 
@@ -418,13 +428,13 @@ def main():
     centre = (lo + hi) / 2
     make_active(ob)
     bpy.ops.object.shade_smooth_by_angle(angle=math.radians(40))
-    hi_ob = lod(ob, a["hi"], "hi")
+    hi_ob = lod(ob, a["hi"], "hi", a["protect"])
     tex_path = os.path.join(a["out"], "texture.png")
     if a["bake"]:
         make_active(hi_ob)
         bake_atlas(hi_ob, a["bake"], a["colours"], a["detail"], tex_path)
         tex = "baked atlas"
-        env_ob = lod(hi_ob, a["env"], "env")
+        env_ob = lod(hi_ob, a["env"], "env", a["protect"])
     else:
         env_ob = lod(ob, a["env"], "env")
         tex = save_texture(ob, tex_path)

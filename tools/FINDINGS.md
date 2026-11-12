@@ -361,3 +361,36 @@ stripe) from the paint table. Per pixel (R, G, B):
 So unpainted parts need B >= 1 and R >= 1: the remaster keeps a little blue in its tail lights
 (Impreza 160,0,16). The 190E's pure red/orange lights (B = 0) were painted; blender_car.py now
 clamps R and B to >= 1 outside the paint squares (`protect_colours`). 190E texture rebuilt; user confirms the lights keep their colours.
+
+## Traffic cars as player cars (tested 2026-11-12, works; reverted for now)
+- traffic.zip `<city><n>.prr`: same layout as himodel.dat with 2 mesh records (0x20 each from
+  0x40): one is the body, the other a flat shadow plane at road level (bbox y = min). No wheels:
+  they are painted into the side of the 24-bit, top-down texture.
+- Test: London cab `lo3` body copied verbatim into slot mcc (vertices already in game units),
+  texture to 32-bit with R and B >= 1 (no paint), wheels where the painted ones are
+  (z +437 / -518, y -150, x +-270, radius 150). User: worked in game. Reverted with git.
+
+## NFS Most Wanted cars (tools/nfsmw_car.py, 2026-11-12)
+- MW car GEOMETRY.BIN read directly (chunk layout in the tool's docstring): 36-byte vertices,
+  u16 indices absolute per object, one material name per material (0x134c02). Car space
+  +X forward, +Y left, +Z up, metres, ground at z = 0. Each part has LODs _A.._E.
+- Body panels (BODY_LEFT/RIGHT/REAR/TOP/...) -> paint mask; other materials -> flat colours
+  by name; LOD A -> himodel, LOD B -> envmodel. Wheels: arches from the body side profile,
+  tyre radius from {KIT}_FRONT_TIRE_A.
+- Slot mcc is now the CLK 500 (handoff/inbox/0006, EA's original MW model: personal use only):
+  9,364 / 4,808 triangles, class 2, 58,000, handling from xkrparam.scr.
+- CLK test 1 (photos): tyres stuck out of the body sides with wheel x = body half width - 51.
+  TD6 cars sit wheel centres about 85 units (0.27 m) inside the body side; mcc now x +-236,
+  nfsmw_car.py uses that rule. mcc hub texture replaced with the xkr/19e silver rims.
+- 190E plates came out black (only Plate_D was a baked detail material); now a flat colour
+  (`--colour ...;Plate_D=225,225,220`, no `--detail`).
+- CLK test 2, fixed and confirmed in game (user: tyres stuck out, wrong size, wrong height): MW car space is not
+  ground-at-0 (the body reaches z -0.03), so wheels sat ~50 units too high and poked through
+  the fenders. nfsmw_car.py now puts the tyre top just under the arch peak, takes the side
+  position from the painted body (mirrors excluded) and suggests WHEEL_RADIUS = literal
+  radius / 0.6 (the game draws tyres at about 0.6 x WHEEL_RADIUS: 190E 91/155, Impreza 99/160).
+  mcc: wheels {+-231, -151, 464 / -402}, radius 175.
+- 190E plates (test 2: still black): decimation merged the rear plate into its black backing
+  (360 -> 18 triangles). blender_car.py `--protect Plate_D` keeps a material out of decimation
+  (vertex group on the Decimate modifier). Protecting the lights too gave 20k triangles /
+  60k vertices, beyond any car the game ships, so only the plates are protected.
