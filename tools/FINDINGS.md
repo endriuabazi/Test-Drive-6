@@ -384,6 +384,15 @@ clamps R and B to >= 1 outside the paint squares (`protect_colours`). 190E textu
   nfsmw_car.py uses that rule. mcc hub texture replaced with the xkr/19e silver rims.
 - 190E plates came out black (only Plate_D was a baked detail material); now a flat colour
   (`--colour ...;Plate_D=225,225,220`, no `--detail`).
+
+## New frontend logos: texture registration (2026-11-12; needs in-game test)
+- User reports Mercedes logo appears as a small white square in Practice.
+- The separate frontend texture descriptor table at 0x49d930 has 122 records of 124 bytes,
+  followed by a sentinel. It lists texture names, TGA filenames and frontend.zip. Adding a
+  logo to the archive and logo selection table alone does not register its texture.
+- `td6addcar.py` now copies this table to .td6mod +0x10000, appends descriptors for Ferrari
+  and Mercedes using the Ford logo descriptor as a template, and repoints the frontend
+  table load at 0x459de3. `TD6_mod.exe` rebuilt; static checks passed, in-game result pending.
 - CLK test 2, fixed and confirmed in game (user: tyres stuck out, wrong size, wrong height): MW car space is not
   ground-at-0 (the body reaches z -0.03), so wheels sat ~50 units too high and poked through
   the fenders. nfsmw_car.py now puts the tyre top just under the arch peak, takes the side

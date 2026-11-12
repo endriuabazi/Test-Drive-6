@@ -85,9 +85,11 @@ LOGO_COUNT_PATCH = (0x42364B, "ba13000000", "ba{n}000000")   # mov edx, 0x13
 
 # layout of the new section. The game reads per-car tables with unchecked byte ids, including
 # 0xff for empty dealer slots (0x41633f), so each per-car table has room for all 256 ids.
-SEC_SIZE = 0x10000
+SEC_SIZE = 0x14000
 OFF_CARS, OFF_PAINT, OFF_LIST, OFF_ORDER = 0x0000, 0x1800, 0x2400, 0x2480
 OFF_RACE, OFF_LOGOS, OFF_HANDLES, OFF_TEXT, OFF_STR = 0x2500, 0x2600, 0x2700, 0x3000, 0x6000
+OFF_FRONTEND = 0x10000
+FRONTEND_TABLE, FRONTEND_ROWS, FRONTEND_ROW = 0x49D930, 122, 124
 assert OFF_CARS + 256 * REC <= OFF_PAINT and OFF_PAINT + 256 * PAINT_ROW <= OFF_LIST
 assert OFF_TEXT + 256 * TEXT_LINES * 4 <= OFF_STR
 
@@ -263,9 +265,29 @@ def build_exe(spec, base_path, out):
     put(OFF_ORDER, struct.pack(f"<{len(order) + 1}H", *order, 0xFF))
     print(f"single race: group 1 {len(group1)} ids, all groups {total}, order list {len(order)}")
 
-    if OFF_STR + len(pool) > SEC_SIZE:
+    if OFF_STR + len(pool) > OFF_FRONTEND:
         sys.exit("string pool full")
     put(OFF_STR, pool)
+
+    # Frontend textures are enumerated by a separate, sentinel-terminated table.
+    # Merely placing a TGA in frontend.zip does not make it available to the UI.
+    rows = bytearray(rd(d, FRONTEND_TABLE, FRONTEND_ROWS * FRONTEND_ROW))
+    template = rd(d, FRONTEND_TABLE + 87 * FRONTEND_ROW, FRONTEND_ROW)  # Ford logo
+    for lg in spec.get("logos", []):
+        name = lg["name"].lower().encode("ascii")
+        filename = lg["file"].encode("ascii")
+        if len(name) >= 16 or len(filename) >= 32:
+            sys.exit("frontend logo name or filename is too long")
+        row = bytearray(template)
+        row[:16] = name.ljust(16, b"\0")
+        row[16:48] = filename.ljust(32, b"\0")
+        rows.extend(row)
+    rows.extend(rd(d, FRONTEND_TABLE + FRONTEND_ROWS * FRONTEND_ROW, FRONTEND_ROW))
+    if OFF_FRONTEND + len(rows) > SEC_SIZE:
+        sys.exit("frontend texture table full")
+    put(OFF_FRONTEND, rows)
+    repoint(d, 0x459DE3, FRONTEND_TABLE, FRONTEND_TABLE + 1,
+            lambda old: base + OFF_FRONTEND)
 
     # code references
     if len(CAR_REFS) != 42 or len(PAINT_REFS) != 13:
