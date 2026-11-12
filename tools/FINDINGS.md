@@ -351,3 +351,13 @@ Scale reference from remaster cars: about 320 game units per metre (Impreza, DB7
   light patch only with the flag honoured). td6car.py ignored it, so importing into a slot
   copied from a remaster car (19e <- xkr) stored the image upside down. Fixed: read_tga
   returns top-first rows, import writes in the car's own order. 190E texture re-imported.
+
+## Paint tint rule (tint routine 0x431200, read 2026-11-12)
+Called from the front end (0x4169ce) and the race loader (0x45a210) with two colours (body,
+stripe) from the paint table. Per pixel (R, G, B):
+- B == 0 and (R or G) > 0  -> body colour * (R + G) / 2 / 255   (the yellow mask; red with B 0 too!)
+- R == 0 and (G or B) > 0  -> stripe colour * (G + B) / 2 / 255 (cyan mask, e.g. Viper stripes)
+- anything else, and pure black, keeps its colour.
+So unpainted parts need B >= 1 and R >= 1: the remaster keeps a little blue in its tail lights
+(Impreza 160,0,16). The 190E's pure red/orange lights (B = 0) were painted; blender_car.py now
+clamps R and B to >= 1 outside the paint squares (`protect_colours`). 190E texture rebuilt; user confirms the lights keep their colours.

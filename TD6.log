@@ -3,7 +3,7 @@ Test Drive 6
 DirectX APIs     7
 Build            28
 Operating System Windows NT Version 6.2, Build 9200 
-Processor        12 x GenuineIntel KNI @ 2690 MHz
+Processor        12 x GenuineIntel KNI @ 2691 MHz
 Physical Memory  2047MB
 Page File        4095MB
 System Name      DESKTOP-9INBNIH
@@ -31,6 +31,6 @@ Released 0 Vertex Buffers in 0 msecs
 
 Static Textures		34	using 1789952 Pixels @ 16bits & 131072 Pixels @ 32bits
 Maximum Texture Dimension	 2048
-prepared 139 level textures in 162 msecs
+prepared 139 level textures in 241 msecs
 Managed Textures: Capacity 600 In Level 139
 Released 8 Vertex Buffers in 0 msecs

@@ -219,6 +219,25 @@ def flat_colour(mat, colours):
 SWATCH = 16   # flat colour squares per row in the bottom strip (2 rows, 1/16 of the height each)
 
 
+def protect_colours(img, paint_cells):
+    """The game paints every pixel whose blue is 0 (body colour) or whose red is 0 (stripe
+    colour), see tint routine 0x431200. Give every pixel outside the paint squares at least
+    1 of each, so lights, plates and trim keep their own colours."""
+    import numpy as np
+    w = img.size[0]
+    px = np.array(img.pixels[:], dtype=np.float32).reshape(w, w, 4)   # rows bottom first
+    keep = np.zeros((w, w), dtype=bool)
+    cell = w // SWATCH
+    for k in paint_cells:
+        x0, y0 = (k % SWATCH) * cell, (k // SWATCH) * cell
+        keep[y0:y0 + cell, x0:x0 + cell] = True
+    low = 1.5 / 255
+    for ch in (0, 2):                                  # red, blue
+        plane = px[:, :, ch]
+        plane[~keep] = np.maximum(plane[~keep], low)
+    img.pixels[:] = px.ravel()
+
+
 def bake_atlas(ob, size, colours, detail, path):
     """New UV layer 'atlas': materials listed in detail get real islands (baked from their
     textures) in the top 7/8; every other material is one flat colour square in the bottom
@@ -298,6 +317,8 @@ def bake_atlas(ob, size, colours, detail, path):
     img.save()
     small = img.copy()
     small.scale(size, size)
+    protect_colours(small, [k for mid, k in swatch_of.items()
+                            if flat_colour(ob.material_slots[mid].material, colours) == PAINT_MASK])
     small.filepath_raw = path
     small.file_format = "PNG"
     small.save()
