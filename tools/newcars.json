@@ -1,0 +1,38 @@
+{
+  "_doc": "Car list for tools/td6addcar.py. Cars get ids 45, 46, ... in this order; never reorder or remove entries (saves store car ids). from = <exe>:<code> whose record, paint colours and spec text are copied; files = <root>:<code> whose zip, scr, hub and param.dat are copied (kept if the target exists); after = car code the new car follows in the single-race list.",
+  "exes": {
+    "retail": "C:/MagiPacks/Test Drive 6/TD6.exe",
+    "bmw": "TD6_remaster_bmw.exe"
+  },
+  "roots": {
+    "retail": "C:/MagiPacks/Test Drive 6",
+    "game": "."
+  },
+  "logos": [
+    {"name": "FERRARI", "file": "ferrari.tga", "from": "game:venturi.tga"}
+  ],
+  "frontend_restore": [
+    {"file": "venturi.tga", "from": "retail:venturi.tga"}
+  ],
+  "logo_fixes": {"mam": "BMW", "mgt": "FORD", "atl": "FERRARI", "400": "FERRARI"},
+  "cars": [
+    {"code": "mcc", "from": "base:eli", "files": "game:eli", "after": "att",
+     "name": "MERCEDES C230", "full": "2001 MERCEDES-BENZ C230", "class": 1, "price": 31000},
+    {"code": "mar", "from": "retail:mam", "files": "retail:mam", "after": "mam"},
+    {"code": "c72", "from": "retail:cud", "files": "retail:cud", "after": "cud"},
+    {"code": "vat", "from": "retail:atl", "files": "retail:atl", "after": "atl"},
+    {"code": "gri", "from": "retail:grf", "files": "retail:grf", "after": "grf"},
+    {"code": "dco", "from": "retail:chd", "files": "retail:chd", "after": "chd"},
+    {"code": "sst", "from": "retail:sup", "files": "retail:sup", "after": "sup"},
+    {"code": "22b", "from": "retail:sub", "files": "retail:sub", "after": "sub"},
+    {"code": "v40", "from": "retail:400", "files": "retail:400", "after": "400"},
+    {"code": "sal", "from": "retail:mgt", "files": "retail:mgt", "after": "mgt"},
+    {"code": "pva", "from": "retail:van", "files": "retail:van", "after": "van"},
+    {"code": "ts2", "from": "retail:s12", "files": "retail:s12", "after": "s12"},
+    {"code": "lmr", "from": "bmw:bmw", "files": "game:bmw", "after": "toy", "logo": "BMW"},
+    {"code": "f1g", "from": "bmw:mcl", "files": "game:mcl", "after": "lmr", "logo": "MCLAREN",
+     "_text": "the remaster exe keeps the GT-One specs here; values from the retail PITBULL 2 entry (the cut McLaren)",
+     "text": ["yMCLAREN F1 GTR", " ", "yENGINE:", "wV12", "yBHP:", "w618", "y0-60 MPH:", "w3.4 SECONDS",
+              "yTOP SPEED:", "w231 MPH", "yLATERAL ACCELERATION:", "w1.1 G"]}
+  ]
+}

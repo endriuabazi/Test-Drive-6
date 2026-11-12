@@ -291,3 +291,37 @@ handles 1 extra car today; needs multi-car support).
 Also replaced: the user's own edits (lit = aud model, sky.zip, skyparam.scr, attparam.scr); they are in `52bf66d`.
 Only in `TD6_remaster_bmw.exe`: BMW V12 LMR (`bmw.zip`) takes the van slot and McLaren F1 GTR (`mcl.zip`)
 the toy slot. Better plan: add both as new slots so the Vanquish and GT-One stay.
+
+## Limits for adding many cars (static, 2026-11-12, remaster exe = same code)
+- Opponent picker 0x41d2c0: per-class candidate list is a 48-byte stack buffer (esp+0x14 in a
+  0x34 frame), so max 48 cars per class.
+- Dealer list 0x65d988 and garage 0x65c49c: 20 slots per class.
+- Single-race list: count word 0x65db4e, entries from 0x65db50, next variable at 0x65dbac,
+  so max 46 entries in total over all unlocked groups (retail groups hold 41 ids). Not in the
+  save block. Refs: 0x65db4e x40, 0x65db50 x4 (0x4141a8, 0x414d58, 0x41d9f6, 0x42362e).
+  Helper 0x413fc0 copies max 0x2e ids per group; group 1 loop bound is 0x480e68 (46 ids).
+- `cmp eax, 0x2c` at 0x41e2b0 and 0x41fe1a compare menu/key codes, not the car count.
+- Count immediates are imm8/imm16: `push imm8` and `cmp r16, imm8` (sign-extended), so up to
+  127 cars without changing instruction sizes.
+
+## 13 more cars + 20th logo (built 2026-11-12; user reports it works in game)
+`python tools/td6addcar.py tools/newcars.json --base TD6_remaster.exe --out TD6_mod.exe`
+builds 59 cars: ids 45 mcc, 46-56 the retail cars the remaster replaced (records, paint, spec
+text and files from the retail backup, new codes mar c72 vat gri dco sst 22b v40 sal pva ts2),
+57 lmr (BMW V12 LMR) and 58 f1g (McLaren F1 GTR), both from `TD6_remaster_bmw.exe` + remaster files.
+Cars per class: 15, 14, 9, 12. Ids must only be appended (saves store them).
+Found while doing it:
+- Single race list is sorted through a display order list at 0x472020 (u16 ids, 0xff end,
+  max 45; refs 0x41418d/0x414d3d, bounds 0x4141c4/0x414d81). Cars missing from it are dropped,
+  so the C230 never showed in single race before this build. Sorting uses a 0x5c stack buffer
+  (`sub esp,0x5c` at 0x414000 and 0x414b35, `mov ecx,0x17` + `rep movsd` back into 0x65db4e).
+  Patched to 0x7c / 0x1f (max 61 entries); both functions have no other stack locals or args.
+- Logos: 19 x (name ptr, 0) at 0x481f50, loaded by 0x4235d0 as `<name>.tga` from frontend.zip
+  into u16 handles at 0x65b440 (0x65b468 is used elsewhere). Count `mov edx,0x13` at 0x42364b,
+  bound `cmp esi,0x481fe8` at 0x423608. Table, handles and count moved/raised for a 20th logo
+  FERRARI (`ferrari.tga` = the remaster's Ferrari image); `venturi.tga` restored from retail.
+  BMW (12) and McLAREN (17) logos already existed (retail cut cars).
+- Logo fixes on remaster cars: mam (Z3) -> BMW, mgt (Cobra R) -> FORD, atl/400 -> FERRARI.
+- Section `.td6mod` is now 0x10000: cars +0, paint +0x1800, group 1 +0x2400, order +0x2480,
+  race buffer +0x2500, logo names +0x2600, logo handles +0x2700, text +0x3000, strings +0x6000.
+- Capstone sweep of .text: no operand left on any moved table.
