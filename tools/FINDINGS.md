@@ -253,3 +253,41 @@ Source: `Test_Drive_6_Remastered.rar`; changed files extracted to `handoff/inbox
   Car table still at 0x481078: only names changed (10 cars swapped for other makes, e.g. ATL = Ferrari F355, 400 = F40).
   `TD6 - BMW & McLaren.exe` also swaps codes VAN<->BMW and TOY<->MCL.
 - It adds 24 bytes of code at 0x46cc05 (a strlen). Same address as our all-cars cave: move ours if combining.
+
+## Remaster adopted as the base (2026-11-12)
+The remaster's cars, params, sounds, `frontend.zip` and `static.zip` now sit in the main folder
+(user tested both remaster exes: OK). Restore point with the retail-based state: commit `52bf66d`.
+- `TD6.exe` stays retail (untouched). `TD6_remaster.exe` / `TD6_remaster_bmw.exe` = the remaster's exes.
+- `TD6_mod.exe` = `TD6_remaster.exe` + 46th car (C230), built with
+  `td6addcar.py ... --base TD6_remaster.exe --out TD6_mod.exe` (section lands at VA 0x678000, file 0xc3000).
+  The remaster exe has stray tool tags in the header padding (0x2b0 "SUN/CLS", 0xfd4); harmless.
+- `TD6_test.exe`, `TD6_allcars.exe`, `TD6_newcar.exe` are retail-based: with the remaster files their
+  car names no longer match the models. Rebuild on the remaster base before using them.
+- `cars/hubs.zip` = remaster hubs + `180.tga`, `tus.tga`, `mcc.tga` kept from ours. `cars/param.zip` kept (ours).
+- `param/mccparam.scr` still has retail Elise handling; the other cars use the remaster's handling model.
+
+### Cars the remaster replaced (to add back later as extra slots)
+Retail models/params: `git show 52bf66d:cars/<code>.zip` (or `C:\MagiPacks\Test Drive 6\cars`).
+To re-add one: copy its retail zip + param under a new 3-letter code, then add a slot (td6addcar
+handles 1 extra car today; needs multi-car support).
+| Code | Retail car (removed) | Remaster car (now in the slot) |
+|---|---|---|
+| mam | 1999 Marcos Mantaray | BMW Z3 Roadster |
+| atl | 1999 Venturi Atlantique | Ferrari F355 Berlinetta |
+| 400 | 1999 Venturi 400GT | Ferrari F40 |
+| grf | 1999 TVR Griffith | TVR Tuscan Speed 6 |
+| chd | Dodge Concept | Dodge Intrepid |
+| sup | 1997 Ford Mustang Super Stallion | Ford Mustang GT |
+| mgt | 1999 Ford Mustang Saleen S351 | Ford Mustang SVT Cobra R |
+| van | Aston Martin Project Vantage | Aston Martin V12 Vanquish |
+| s12 | 1999 TVR Speed 12 | TVR Cerbera Speed 12 |
+| cud | 1972 Plymouth Hemi Cuda | Plymouth Cuda '70 |
+| sub | 1999 Subaru Impreza 22B STi | Subaru Impreza GT Prodrive |
+| cp1 | Jaguar police car | Police Paseo |
+| cp2 | Dodge Charger police car | Police Camaro |
+| cp3 | Ford Mustang police car | Police Diablo |
+| cp4 | TVR Cerbera police car | Police Corvette |
+
+Also replaced: the user's own edits (lit = aud model, sky.zip, skyparam.scr, attparam.scr); they are in `52bf66d`.
+Only in `TD6_remaster_bmw.exe`: BMW V12 LMR (`bmw.zip`) takes the van slot and McLaren F1 GTR (`mcl.zip`)
+the toy slot. Better plan: add both as new slots so the Vanquish and GT-One stay.

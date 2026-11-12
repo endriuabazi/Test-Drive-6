@@ -8,6 +8,7 @@ Usage (run from the game folder):
            <code>.tga in cars/hubs.zip, <code>param.dat in cars/param.zip)
   clone    existing car whose record, paint colours and files are copied
   --class  1-4 (default: same as the clone)   --price  (default: same as the clone)
+  --base   exe to start from (default TD6.exe; use TD6_remaster.exe for the remaster names)
 
 What the exe copy gets (see tools/FINDINGS.md, "Adding a 46th car"):
   - a new section .td6mod holding the car table (46 records), the paint table (46 rows),
@@ -91,7 +92,10 @@ def add_section(d, name, size):
     opt = pe + 24
     nsec = struct.unpack_from("<H", d, pe + 6)[0]
     hdr = opt + struct.unpack_from("<H", d, pe + 20)[0] + nsec * 40
-    if any(d[hdr:hdr + 40]):
+    # the slot must lie in the header padding before the first section's data; the remaster
+    # exe has a stray tool tag ("SUN/CLS") there, which the loader ignores
+    first_raw = min(struct.unpack_from("<I", d, hdr - 40 * (i + 1) + 20)[0] for i in range(nsec))
+    if hdr + 40 > first_raw:
         sys.exit("no room for a new section header")
     va = struct.unpack_from("<I", d, opt + 56)[0]      # SizeOfImage, already page aligned
     raw = len(d)
@@ -106,7 +110,7 @@ def add_section(d, name, size):
 
 
 def build_exe(args):
-    d = bytearray(open(ORIGINAL, "rb").read())
+    d = bytearray(open(args.base, "rb").read())
     codes = [cstr(d, u32(d, CAR_TABLE + i * REC + 8)).lower() for i in range(CARS)]
     if args.code in codes:
         sys.exit(f"{args.code} is already one of the 45 cars")
@@ -220,12 +224,13 @@ def main():
     ap.add_argument("--class", type=int, dest="cls", choices=range(1, 5))
     ap.add_argument("--price", type=int)
     ap.add_argument("--out", default=os.path.join(ROOT, "TD6_newcar.exe"))
+    ap.add_argument("--base", default=ORIGINAL, help="exe to copy (default TD6.exe)")
     args = ap.parse_args()
     args.code, args.clone = args.code.lower(), args.clone.lower()
     if len(args.code) != 3 or not args.code.isalnum():
         sys.exit("code must be 3 letters or digits")
-    if os.path.abspath(args.out) == os.path.abspath(ORIGINAL):
-        sys.exit("refusing to overwrite TD6.exe")
+    if os.path.abspath(args.out) in (os.path.abspath(ORIGINAL), os.path.abspath(args.base)):
+        sys.exit("refusing to overwrite the base exe")
     build_exe(args)
     clone_assets(args.code, args.clone)
 
