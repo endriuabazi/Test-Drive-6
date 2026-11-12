@@ -9,14 +9,15 @@
     "game": "."
   },
   "logos": [
-    {"name": "FERRARI", "file": "ferrari.tga", "from": "game:venturi.tga"}
+    {"name": "FERRARI", "file": "ferrari.tga", "from": "game:venturi.tga"},
+    {"name": "MERCEDES", "file": "mercedes.tga", "from": "game:mercedes.tga"}
   ],
   "frontend_restore": [
     {"file": "venturi.tga", "from": "retail:venturi.tga"}
   ],
   "logo_fixes": {"mam": "BMW", "mgt": "FORD", "atl": "FERRARI", "400": "FERRARI"},
   "cars": [
-    {"code": "mcc", "from": "base:eli", "files": "game:eli", "after": "att",
+    {"code": "mcc", "from": "base:eli", "files": "game:eli", "after": "att", "logo": "MERCEDES",
      "name": "MERCEDES C230", "full": "2001 MERCEDES-BENZ C230", "class": 1, "price": 31000},
     {"code": "mar", "from": "retail:mam", "files": "retail:mam", "after": "mam"},
     {"code": "c72", "from": "retail:cud", "files": "retail:cud", "after": "cud"},
@@ -33,6 +34,11 @@
     {"code": "f1g", "from": "bmw:mcl", "files": "game:mcl", "after": "lmr", "logo": "MCLAREN",
      "_text": "the remaster exe keeps the GT-One specs here; values from the retail PITBULL 2 entry (the cut McLaren)",
      "text": ["yMCLAREN F1 GTR", " ", "yENGINE:", "wV12", "yBHP:", "w618", "y0-60 MPH:", "w3.4 SECONDS",
-              "yTOP SPEED:", "w231 MPH", "yLATERAL ACCELERATION:", "w1.1 G"]}
+              "yTOP SPEED:", "w231 MPH", "yLATERAL ACCELERATION:", "w1.1 G"]},
+    {"code": "19e", "from": "base:eli", "files": "game:xkr", "after": "mcc", "logo": "MERCEDES",
+     "_doc": "model from handoff/inbox/0003 (Sketchfab, Dave Love, CC-BY-4.0) via tools/blender_car.py; record from eli (I4 sound), handling from xkr (RWD saloon)",
+     "name": "MERCEDES 190E", "full": "1984 MERCEDES-BENZ 190E", "class": 1, "price": 30000,
+     "text": ["y1984 MERCEDES-BENZ 190E", " ", "yENGINE:", "wINLINE 4 CYLINDERS", "yBHP:", "w136",
+              "y0-60 MPH:", "w9.6 SECONDS", "yTOP SPEED:", "w124 MPH", "yLATERAL ACCELERATION:", "w0.80 G"]}
   ]
 }

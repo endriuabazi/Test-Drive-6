@@ -31,12 +31,20 @@ def zip_path(car):
     return os.path.join(ROOT, "cars", car + ".zip")
 
 
+def flip_rows(px, w=256, h=256):
+    row = w * 4
+    return b"".join(px[(h - 1 - y) * row:(h - y) * row] for y in range(h))
+
+
 def read_tga(car):
+    """Header and BGRA pixels, top row first. Retail textures are stored top-down
+    (descriptor 0x20), the remaster's bottom-up (0x08); the game honours the flag."""
     data = zipfile.ZipFile(zip_path(car)).read(TEX)
     w, h, bpp = struct.unpack("<HHB", data[12:17])
     if (data[2], w, h, bpp) != (2, 256, 256, 32):
         sys.exit(f"unexpected TGA format in {car}: type={data[2]} {w}x{h}x{bpp}")
-    return data[:18], data[18:18 + w * h * 4]
+    px = data[18:18 + w * h * 4]
+    return data[:18], px if data[17] & 0x20 else flip_rows(px, w, h)
 
 
 def write_zip_member(car, name, payload):
@@ -126,7 +134,8 @@ def cmd_import(car, src):
     bgra = bytearray(len(rgba))
     for i in range(0, len(rgba), 4):
         bgra[i:i + 4] = bytes((rgba[i + 2], rgba[i + 1], rgba[i], rgba[i + 3]))
-    write_zip_member(car, TEX, header + bytes(bgra))
+    # keep the car's own row order (header descriptor bit 0x20 = top row first)
+    write_zip_member(car, TEX, header + (bytes(bgra) if header[17] & 0x20 else flip_rows(bytes(bgra))))
     print(f"updated {TEX} in cars/{car}.zip")
 
 

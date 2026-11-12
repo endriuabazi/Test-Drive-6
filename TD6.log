@@ -31,6 +31,6 @@ Released 0 Vertex Buffers in 0 msecs
 
 Static Textures		34	using 1789952 Pixels @ 16bits & 131072 Pixels @ 32bits
 Maximum Texture Dimension	 2048
-prepared 139 level textures in 219 msecs
+prepared 139 level textures in 162 msecs
 Managed Textures: Capacity 600 In Level 139
-Released 32 Vertex Buffers in 0 msecs
+Released 8 Vertex Buffers in 0 msecs
