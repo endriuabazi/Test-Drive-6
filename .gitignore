@@ -1,0 +1,11 @@
+# Downloads (third-party models, the 2019 remaster files) and ChatGPT working folders.
+# Large, or not ours to publish; the finished results are committed in the game folders.
+handoff/inbox/
+handoff/*-remaster/
+handoff/*-test/
+
+# Python cache
+__pycache__/
+
+# ChatGPT's C230 generator (that model was rejected)
+tools/build_c230.py
