@@ -8,7 +8,6 @@ Physical Memory  2047MB
 Page File        4095MB
 System Name      DESKTOP-9INBNIH
 
-Sound Device	Headphones (Endriu's Buds4 Pro) ({0.0.0.00000000}.{cf3de77c-b341-4f6f-85c6-db09d7e82c69}) 
 Sound Device	Speakers (Realtek(R) Audio) ({0.0.0.00000000}.{6fc5db02-9ce2-4d31-9e1d-074bb916dc2a}) 
 Sound Device	Speakers (EShare Audio) ({0.0.0.00000000}.{f7ac655b-2993-4d42-8263-244a105a14f6}) 
 EAX Support		Not Available
@@ -31,5 +30,5 @@ Released 0 Vertex Buffers in 0 msecs
 
 Static Textures		34	using 1789952 Pixels @ 16bits & 131072 Pixels @ 32bits
 Maximum Texture Dimension	 2048
-prepared 139 level textures in 158 msecs
+prepared 139 level textures in 135 msecs
 Managed Textures: Capacity 600 In Level 139

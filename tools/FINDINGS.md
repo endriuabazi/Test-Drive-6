@@ -422,3 +422,6 @@ clamps R and B to >= 1 outside the paint squares (`protect_colours`). 190E textu
 London 4road.tga resized 256 -> 512 with textures.dir updated: user reports crash or wrong
 display. Treat 256x256 as the engine's texture limit; texture4.zip restored. dgVoodoo VRAM
 raised 256 -> 1024 (kept).
+- Follow-up (2026-11-13): 512x256 and 256x512 (4Road.tga, textures.dir updated) both crash or
+  draw wrong too, so any texture over 256x256 fails, not just one axis: likely a fixed
+  256x256 buffer or a hard check in the loader. Next: find it in the exe. London restored.
