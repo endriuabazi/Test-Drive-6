@@ -417,3 +417,8 @@ clamps R and B to >= 1 outside the paint squares (`protect_colours`). 190E textu
   Unused: steel_hubcap (kept for traffic cars). Still sharing a rim in the dealers:
   mam/mgt (Z3, Cobra R), s12/ts2, pva/van. bmw/lmr and f1g/mcl share with the hidden
   PITBULL specials, cer/cp4 with a police car.
+
+## 512-pixel track textures (2026-11-13): failed
+London 4road.tga resized 256 -> 512 with textures.dir updated: user reports crash or wrong
+display. Treat 256x256 as the engine's texture limit; texture4.zip restored. dgVoodoo VRAM
+raised 256 -> 1024 (kept).
