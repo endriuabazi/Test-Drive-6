@@ -403,3 +403,17 @@ clamps R and B to >= 1 outside the paint squares (`protect_colours`). 190E textu
   (360 -> 18 triangles). blender_car.py `--protect Plate_D` keeps a material out of decimation
   (vertex group on the Decimate modifier). Protecting the lights too gave 20k triangles /
   60k vertices, beyond any car the game ships, so only the plates are protected.
+
+## Wheels and rims (2026-11-13)
+- One shared wheel model for every car: static.zip `wheelhi.prr` (60 triangles) and
+  `wheello.prr` (28), about 200 units across; unchanged by the remaster (byte-identical).
+- Per-car rim picture: `cars/hubs.zip` `<code>.tga`, 64x64 24-bit, bottom-up (descriptor 0).
+  The remaster changed 13 of the 44 retail rims.
+- `tools/td6hub.py import <car> <png>` (64x64 or a multiple, box-shrunk) / `export`.
+- ChatGPT task 0007 delivered 12 rims (handoff/inbox/0007-rim-textures). Fitted: mcc <- clk500,
+  19e <- 190e (untested in game). The other 10 are unassigned.
+- Rims assigned (2026-11-13, untested): c72 muscle_chrome, 22b mesh_gold, mar wire, dco turbofan,
+  sal sport5, sst split5_gunmetal, v40 6spoke_black, vat multispoke_silver, lit offroad.
+  Unused: steel_hubcap (kept for traffic cars). Still sharing a rim in the dealers:
+  mam/mgt (Z3, Cobra R), s12/ts2, pva/van. bmw/lmr and f1g/mcl share with the hidden
+  PITBULL specials, cer/cp4 with a police car.
